@@ -18,21 +18,36 @@ function generateRandomColor() {
 }
 
 function assignColor(userName, roomId) {
+  if (!userColors[roomId]) {
+    userColors[roomId] = {};
+  }
+
   // 이미 색상이 부여된 사용자인 경우 기존 색상 반환
   if (userColors[roomId] && userColors[roomId][userName]) {
     return userColors[roomId][userName];
   }
 
-  const usedColors = usersInRooms[roomId]?.map((user) => user.color) || [];
-  const availableColors = COLORS.filter((color) => !usedColors.includes(color));
-  const assignedColor = availableColors.length > 0 ? availableColors[0] : COLORS[Math.floor(Math.random() * COLORS.length)];
+  let assignedColor;
 
-  if (!userColors[roomId]) {
-    userColors[roomId] = {};
+  // 사용 가능한 색상이 있으면 할당하고, 없으면 새로운 색상을 생성
+  if (availableColors.length > 0) {
+    assignedColor = availableColors.pop(); // 배열에서 색상을 꺼내어 할당
+  } else {
+    assignedColor = generateRandomColor();
   }
+
+  // 색상을 사용자에게 할당
   userColors[roomId][userName] = assignedColor;
 
   return assignedColor;
+}
+
+// 사용자가 퇴장할 때 색상을 다시 사용 가능한 상태로 되돌림
+function releaseColor(userName, roomId) {
+  if (userColors[roomId] && userColors[roomId][userName]) {
+    availableColors.push(userColors[roomId][userName]); // 사용한 색상을 다시 배열에 추가
+    delete userColors[roomId][userName];
+  }
 }
 
 exports.init = (server) => {
@@ -82,6 +97,7 @@ exports.init = (server) => {
       // 연결 해제 시 사용자 제거 처리
       socket.on("disconnect", () => {
         usersInRooms[roomId] = usersInRooms[roomId].filter((user) => user.name !== userName);
+        releaseColor(userName, roomId); // 사용자가 퇴장하면 색상 반환
         io.to(roomId).emit("update-user-list", usersInRooms[roomId]);
         console.log(`${userName} left room ${roomId}`);
       });
