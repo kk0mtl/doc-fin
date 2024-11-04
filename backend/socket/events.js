@@ -30,8 +30,8 @@ function assignColor(userName, roomId) {
   let assignedColor;
 
   // 사용 가능한 색상이 있으면 할당하고, 없으면 새로운 색상을 생성
-  if (availableColors.length > 0) {
-    assignedColor = availableColors.pop(); // 배열에서 색상을 꺼내어 할당
+  if (COLORS.length > 0) {
+    assignedColor = COLORS.pop(); // 배열에서 색상을 꺼내어 할당
   } else {
     assignedColor = generateRandomColor();
   }
@@ -45,7 +45,7 @@ function assignColor(userName, roomId) {
 // 사용자가 퇴장할 때 색상을 다시 사용 가능한 상태로 되돌림
 function releaseColor(userName, roomId) {
   if (userColors[roomId] && userColors[roomId][userName]) {
-    availableColors.push(userColors[roomId][userName]); // 사용한 색상을 다시 배열에 추가
+    COLORS.push(userColors[roomId][userName]); // 사용한 색상을 다시 배열에 추가
     delete userColors[roomId][userName];
   }
 }
