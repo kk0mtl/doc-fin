@@ -5,7 +5,7 @@ const docController = require("../controllers/documents");
 
 const usersInRooms = {}; // 각 roomId에 대한 사용자 배열을 저장하는 객체
 const userColors = {}; // 사용자별 색상을 저장하는 객체
-const COLORS = ["#00323F", "#FFCE00", "#83C9D9", "#6690D8", "#E7E5DC", "#590202"]; // 색상 배열
+const COLORS = ["#00323F", "#FFCE00", "#83C9D9", "#6690D8", "#a86be4", "#590202"]; // 색상 배열
 
 // 랜덤 색상 생성 함수
 function generateRandomColor() {
